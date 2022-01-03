@@ -1,0 +1,260 @@
+ChatPage
+
+  @Override
+    public void onStart() {
+        super.onStart();
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                    ChatRoomUsers chatUsers = dataSnapshot1.getValue(ChatRoomUsers.class);
+                    chatRoomUsersList.add(chatUsers);
+                    String user1 = chatUsers.getUser1();
+                    String user2 = chatUsers.getUser2();
+
+                    if ((getMyName.equals(user1) && getUserName.equals(user2) || getMyName.equals(user2) && getUserName.equals(user1))) {
+                        key = dataSnapshot1.getKey();
+                        count += 1;
+                    }
+                }
+
+
+
+                if (chatRoomUsersList.size() == 0 || count == 0) {
+                    ChatRoomUsers chatUsers = new ChatRoomUsers(getMyName, getUserName);
+                    key = myRef.push().getKey();
+                    myRef.child(key).setValue(chatUsers);
+                }
+
+                chatDataList.clear();
+                ChildEventListener childEventListener = new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                        ChatData chatData = snapshot.getValue(ChatData.class);
+                        chatDataList.add(chatData);
+                        recyclerView.scrollToPosition(chatDataList.size() - 1);
+                        chatAdapter.notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+                DatabaseReference myRef2 = database.getReference("chatData").child(key).child("chatroom");
+                myRef2.addChildEventListener(childEventListener);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        myRef.addListenerForSingleValueEvent(postListener);
+
+
+
+    }
+
+
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("KEY", key);
+                    String sendMessage = message.getText().toString();
+                    if (sendMessage.equals("")) {
+                        return;
+                    }
+
+
+                    SimpleDateFormat format = new SimpleDateFormat ( "HH:mm");
+                    Calendar time = Calendar.getInstance();
+
+                    String formatTime = format.format(time.getTime());
+
+                    myRef.child(key).child("chatroom").push().setValue(new ChatData(getMyName, sendMessage, formatTime));
+                    message.setText("");
+                }
+            });
+
+
+ChatPageAdpater
+
+public class ChatPageAdapter extends RecyclerView.Adapter<ChatPageAdapter.MyViewHolder>{
+
+    private List<ChatData> dataList;
+    private String user;
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        private TextView date, message;
+        public MyViewHolder(View v) {
+            super(v);
+
+            message = (TextView) v.findViewById(R.id.message);
+            date = (TextView) v.findViewById(R.id.time);
+
+        }
+    }
+
+    public ChatPageAdapter(List<ChatData> getData, String user1) {
+        dataList = getData;
+        user = user1;
+    }
+
+
+    @Override
+    public ChatPageAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v;
+
+        if (viewType == 1) {
+            v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_chat_page_adapter, parent, false);
+        } else {
+            v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_chat_page_adapter_two, parent, false);
+        }
+
+
+        MyViewHolder vh = new MyViewHolder(v);
+        return vh;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(dataList.get(position).getUser().equals(user)) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        holder.date.setText(dataList.get(position).getTime());
+        holder.message.setText(dataList.get(position).getMessage());
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataList == null ? 0 : dataList.size();
+    }
+
+}
+
+
+
+
+getData
+    @Override
+    public void onStart() {
+        super.onStart();
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for(DataSnapshot childrensnapshot: snapshot.getChildren()) {
+                    User userData = childrensnapshot.getValue(User.class);
+                    users.add(userData);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.d(TAG, String.valueOf(error));
+            }
+        });
+        SharedPreferences sf = getActivity().getSharedPreferences("user",getActivity().MODE_PRIVATE);
+        userName = sf.getString("name","");
+        bitmap = StringToBitMap(sf.getString("profile", ""));
+        id = sf.getString("id","");
+        profile.setImageBitmap(bitmap);
+        name.setText(userName);
+
+        myRefFriends.child(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                friendList.clear();
+                myFriendList.clear();
+                recommendFriendList.clear();
+                for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    Friend friend = snapshot1.getValue(Friend.class);
+
+                    if (friend.isAccept() == true) {
+                        myFriendList.add(friend);
+                        friendCount.setText("친구 " + myFriendList.size());
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        recommendFriendList.add(friend);
+                        recommendfriendcount.setText(String.valueOf(recommendFriendList.size()));
+                    }
+
+                    friendList.add(friend);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        myRefFriends.child(id).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                recommendfriendcount.setText(String.valueOf(recommendFriendList.size()));
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public Bitmap StringToBitMap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+
+}
