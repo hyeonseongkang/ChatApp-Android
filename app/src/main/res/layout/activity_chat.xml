@@ -50,7 +50,7 @@
                 android:layout_gravity="center_vertical"
                 android:hint="Wirte a message..."/>
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/sendButton"
                 android:layout_width="60dp"
                 android:layout_height="20dp"

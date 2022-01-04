@@ -1,14 +1,115 @@
 package com.example.chatapp;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
+
+    public static String TAG = "ChatActivity";
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("chat");
+
+    private List<ChatData> chatDataList;
+
+    private TextView users;
+    private EditText message;
+    private Button sendButton;
+
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("userName");
+
+        chatDataList = new ArrayList<>();
+
+        users = (TextView) findViewById(R.id.users);
+        message = (EditText) findViewById(R.id.message);
+        sendButton = (Button) findViewById(R.id.sendButton);
+
+        sendButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String userMessage = message.getText().toString();
+
+                if (userMessage.length() <= 0) {
+                    Toast.makeText(ChatActivity.this, "입력 사항을 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                SimpleDateFormat format = new SimpleDateFormat ( "HH:mm");
+                Calendar time = Calendar.getInstance();
+
+                String formatTime = format.format(time.getTime());
+
+                myRef.push().setValue(new ChatData(userName, formatTime, userMessage));
+                message.setText("");
+            }
+        });
+
+        getData();
+        Log.d(TAG, userName);
+
+    }
+
+
+    private void getData() {
+
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                ChatData chatData = snapshot.getValue(ChatData.class);
+                chatDataList.add(chatData);
+                Log.d(TAG, chatData.getMessage());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 }

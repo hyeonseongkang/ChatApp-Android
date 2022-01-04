@@ -29,11 +29,16 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/register_button_layout"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
         android:layout_below="@+id/center"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"/>
+        android:text="가입"
+        android:textColor="#ffffff"
+        android:layout_marginTop="10dp"/>
 
 
 
