@@ -3,6 +3,8 @@ package com.example.chatapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,12 +34,18 @@ public class ChatActivity extends AppCompatActivity {
     DatabaseReference myRef = database.getReference("chat");
 
     private List<ChatData> chatDataList;
+    private List<String> userList;
 
     private TextView users;
     private EditText message;
     private Button sendButton;
 
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private ChatAdapter chatAdapter;
+
     private String userName;
+    private String userListString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +55,18 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");
 
+        userList = new ArrayList<>();
         chatDataList = new ArrayList<>();
 
         users = (TextView) findViewById(R.id.users);
         message = (EditText) findViewById(R.id.message);
         sendButton = (Button) findViewById(R.id.sendButton);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        layoutManager = new LinearLayoutManager(ChatActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        chatAdapter = new ChatAdapter(chatDataList, userName);
+        recyclerView.setAdapter(chatAdapter);
 
         sendButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -65,7 +80,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 SimpleDateFormat format = new SimpleDateFormat ( "HH:mm");
                 Calendar time = Calendar.getInstance();
-
                 String formatTime = format.format(time.getTime());
 
                 myRef.push().setValue(new ChatData(userName, formatTime, userMessage));
@@ -80,7 +94,6 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void getData() {
-
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
