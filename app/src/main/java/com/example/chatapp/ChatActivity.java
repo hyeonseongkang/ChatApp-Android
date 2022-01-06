@@ -45,7 +45,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
 
     private String userName;
-    private String userListString;
+    private String userListString = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
