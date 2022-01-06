@@ -99,7 +99,16 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
                 ChatData chatData = snapshot.getValue(ChatData.class);
+                if (userList.contains(chatData.getUserName())) {
+                    Log.d(TAG, "Contains UserName....");
+                } else {
+                    userList.add(chatData.getUserName());
+                    userListString += chatData.getUserName() + "님 ";
+                    users.setText(userListString);
+                }
                 chatDataList.add(chatData);
+                recyclerView.scrollToPosition(chatDataList.size() - 1);
+                chatAdapter.notifyDataSetChanged();
                 Log.d(TAG, chatData.getMessage());
             }
 
