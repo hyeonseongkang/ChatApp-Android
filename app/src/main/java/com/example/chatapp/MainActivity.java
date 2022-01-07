@@ -1,16 +1,24 @@
 package com.example.chatapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,18 +27,23 @@ public class MainActivity extends AppCompatActivity {
     private Button registerButton;
     private EditText userName;
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("chat");
 
-    DatabaseReference myRef = database.getReference("message");
+    private List<String> userList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        userList = new ArrayList<>();
+
+        getUsersName();
+
         registerButton = (Button) findViewById(R.id.registerButton);
         userName = (EditText) findViewById(R.id.userName);
-
+        
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -41,9 +54,35 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (userList.contains(getUserName)) {
+                    Toast.makeText(MainActivity.this, "이미 존재하는 닉네임 입니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 intent.putExtra("userName", getUserName);
                 startActivity(intent);
+            }
+        });
+    }
+
+    void getUsersName() {
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    ChatData data = childSnapshot.getValue(ChatData.class);
+                    Log.d(TAG, String.valueOf(snapshot.getValue()));
+                    userList.add(data.getUserName());
+                    Log.d(TAG, data.getUserName());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull  DatabaseError error) {
+
             }
         });
     }

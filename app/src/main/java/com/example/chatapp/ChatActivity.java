@@ -114,7 +114,10 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                    for (String userNames: userList) {
+                        Log.d(TAG, " Contains UserNames.....");
+                    }
+                    Log.d(TAG,"Not Contains UserNames....");
             }
 
             @Override
