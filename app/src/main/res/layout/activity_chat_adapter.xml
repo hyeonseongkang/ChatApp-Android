@@ -3,40 +3,62 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp">
+    android:layout_marginTop="10dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profile"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/profile"/>
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ㅎㅇ"
+            android:layout_toRightOf="@+id/profile"
+            android:layout_marginLeft="5dp"
+            android:textSize="13dp"
+            android:textColor="#000000"/>
 
         <LinearLayout
             android:id="@+id/one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp"
-            android:background="@drawable/chat_layout">
+            android:orientation="horizontal"
+            android:layout_below="@+id/userName"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/profile">
 
             <TextView
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/chat_layout"
                 android:text="ㅎㅇ"
+                android:gravity="center"
+                android:padding="10dp"
                 android:textColor="#000000"
-                android:padding="5dp"
                 android:textSize="16dp"
                 android:id="@+id/message"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="07:15"
+                android:textSize="8dp"
+                android:id="@+id/time"
+                android:layout_toRightOf="@+id/one"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="3dp" />
         </LinearLayout>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="07:15"
-            android:textSize="8dp"
-            android:id="@+id/time"
-            android:layout_below="@+id/one"
-            android:layout_marginLeft="5dp" />
+
     </RelativeLayout>
 </RelativeLayout>

@@ -3,12 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp">
+    android:layout_marginTop="10dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="07:15"
+            android:textSize="8dp"
+            android:id="@+id/time"
+            android:layout_below="@+id/one"
+            android:layout_marginRight="3dp"
+            android:layout_gravity="bottom"/>
 
         <LinearLayout
             android:id="@+id/one"
@@ -29,15 +40,8 @@
                 android:id="@+id/message"/>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="07:15"
-            android:textSize="8dp"
-            android:id="@+id/time"
-            android:layout_below="@+id/one"
-            android:layout_marginLeft="5dp"/>
 
-    </RelativeLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

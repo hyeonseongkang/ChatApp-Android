@@ -15,12 +15,13 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>
     private String user;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView date, message;
+        private TextView date, message, userName;
         public MyViewHolder(View v) {
             super(v);
 
             message = (TextView) v.findViewById(R.id.message);
             date = (TextView) v.findViewById(R.id.time);
+            userName = (TextView) v.findViewById(R.id.userName);
 
         }
     }
@@ -60,6 +61,11 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.date.setText(dataList.get(position).getTime());
         holder.message.setText(dataList.get(position).getMessage());
+        int type = getItemViewType(position);
+        if (type != 1) {
+            holder.userName.setText(dataList.get(position).getUserName());
+        }
+
     }
 
     @Override
