@@ -1,8 +1,10 @@
 package com.example.chatapp;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,12 +15,15 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>
 
     private List<ChatData> dataList;
     private String user;
+    private String[] colors = {"#7EF3E5", "#CC90F6"};
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView date, message, userName;
+        private ImageView profile;
         public MyViewHolder(View v) {
             super(v);
 
+            profile = (ImageView) v.findViewById(R.id.profile);
             message = (TextView) v.findViewById(R.id.message);
             date = (TextView) v.findViewById(R.id.time);
             userName = (TextView) v.findViewById(R.id.userName);
@@ -61,8 +66,10 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.date.setText(dataList.get(position).getTime());
         holder.message.setText(dataList.get(position).getMessage());
+
         int type = getItemViewType(position);
         if (type != 1) {
+            holder.profile.setBackgroundColor(Color.parseColor("#7EF3E5"));
             holder.userName.setText(dataList.get(position).getUserName());
         }
 

@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("name", getUserName);
                 editor.commit();
 
-
                 Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 intent.putExtra("userName", getUserName);
                 startActivity(intent);

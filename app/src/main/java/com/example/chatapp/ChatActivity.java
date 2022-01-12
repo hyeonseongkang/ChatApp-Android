@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView users;
     private EditText message;
     private Button sendButton;
+    private TextView logoutButton;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -61,6 +63,9 @@ public class ChatActivity extends AppCompatActivity {
         users = (TextView) findViewById(R.id.users);
         message = (EditText) findViewById(R.id.message);
         sendButton = (Button) findViewById(R.id.sendButton);
+        logoutButton = (TextView) findViewById(R.id.logoutButton);
+        logoutButton.setEnabled(true);
+        logoutButton.setClickable(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(ChatActivity.this);
@@ -84,6 +89,17 @@ public class ChatActivity extends AppCompatActivity {
 
                 myRef.push().setValue(new ChatData(userName, formatTime, userMessage));
                 message.setText("");
+            }
+        });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPreferences = getSharedPreferences("users", MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.clear();
+                edit.commit();
+                finish();
             }
         });
 
