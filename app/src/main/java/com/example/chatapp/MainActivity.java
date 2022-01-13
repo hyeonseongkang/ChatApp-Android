@@ -79,11 +79,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 intent.putExtra("userName", getUserName);
                 startActivity(intent);
+                userName.setText("");
             }
         });
     }
 
     void getUsersName() {
+        userList.clear();
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -102,5 +104,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        getUsersName();
     }
 }
