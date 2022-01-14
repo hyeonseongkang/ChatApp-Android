@@ -87,8 +87,16 @@ public class ChatActivity extends AppCompatActivity {
                 Calendar time = Calendar.getInstance();
                 String formatTime = format.format(time.getTime());
 
+
+                // 매일 자정이 되면 날짜 표시하기
+                SimpleDateFormat format2 = new SimpleDateFormat("yyyy년 MM월 dd일 E요일");
+                Calendar time2 = Calendar.getInstance();
+                String formatTime2 = format2.format(time2.getTime());
+                Log.d(TAG, formatTime2);
+
+
                 myRef.push().setValue(new ChatData(userName, formatTime, userMessage));
-                message.setText("");
+                message.setText(formatTime2);
             }
         });
 

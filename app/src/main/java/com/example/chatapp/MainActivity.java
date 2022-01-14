@@ -67,11 +67,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (userList.contains(getUserName)) {
-                    Toast.makeText(MainActivity.this, "이미 존재하는 닉네임 입니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("name", getUserName);
                 editor.commit();
