@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText userName;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("chat");
+    DatabaseReference myRef = database.getReference("users");
 
     private List<String> userList;
 
@@ -67,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (userList.contains(getUserName)) {
+                    Toast.makeText(MainActivity.this, "이미 존재하는 닉네임 입니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                myRef.push().setValue(new User(getUserName));
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("name", getUserName);
                 editor.commit();
@@ -86,10 +93,10 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    ChatData data = childSnapshot.getValue(ChatData.class);
+                    User data = childSnapshot.getValue(User.class);
                     Log.d(TAG, String.valueOf(snapshot.getValue()));
-                    userList.add(data.getUserName());
-                    Log.d(TAG, data.getUserName());
+                    userList.add(data.getName());
+                    Log.d(TAG, data.getName());
                 }
 
             }
