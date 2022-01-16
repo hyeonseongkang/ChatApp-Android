@@ -32,7 +32,8 @@ public class ChatActivity extends AppCompatActivity {
     public static String TAG = "ChatActivity";
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("chat");
+    DatabaseReference chatRef = database.getReference("chat");
+    DatabaseReference usersRef = database.getReference("users");
 
     private List<ChatData> chatDataList;
     private List<String> userList;
@@ -95,7 +96,7 @@ public class ChatActivity extends AppCompatActivity {
                 Log.d(TAG, formatTime2);
 
 
-                myRef.push().setValue(new ChatData(userName, formatTime, userMessage));
+                chatRef.push().setValue(new ChatData(userName, formatTime, userMessage));
                 message.setText(formatTime2);
             }
         });
@@ -118,18 +119,44 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void getData() {
-        myRef.addChildEventListener(new ChildEventListener() {
+
+        // usersData
+        usersRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User userData = snapshot.getValue(User.class);
+                userListString += userData.getName() + "님 ";
+                users.setText(userListString);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        // chatData
+        chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
                 ChatData chatData = snapshot.getValue(ChatData.class);
-                if (userList.contains(chatData.getUserName())) {
-                    Log.d(TAG, "Contains UserName....");
-                } else {
-                    userList.add(chatData.getUserName());
-                    userListString += chatData.getUserName() + "님 ";
-                    users.setText(userListString);
-                }
                 chatDataList.add(chatData);
                 recyclerView.scrollToPosition(chatDataList.size() - 1);
                 chatAdapter.notifyDataSetChanged();

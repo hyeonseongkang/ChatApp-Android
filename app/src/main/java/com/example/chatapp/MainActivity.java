@@ -67,12 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (userList.contains(getUserName)) {
-                    Toast.makeText(MainActivity.this, "이미 존재하는 닉네임 입니다.", Toast.LENGTH_SHORT).show();
-                    return;
+                if (!userList.contains(getUserName)) {
+                    myRef.push().setValue(new User(getUserName));
                 }
-
-                myRef.push().setValue(new User(getUserName));
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("name", getUserName);
@@ -91,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                     User data = childSnapshot.getValue(User.class);
                     Log.d(TAG, String.valueOf(snapshot.getValue()));
