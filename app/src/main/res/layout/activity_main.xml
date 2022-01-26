@@ -36,7 +36,7 @@
         android:layout_marginRight="100dp"
         android:layout_below="@+id/center"
         android:layout_centerHorizontal="true"
-        android:text="입장"
+        android:text="login"
         android:textColor="#0055FF"
         android:textSize="18dp"
         android:layout_marginTop="10dp"/>

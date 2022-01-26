@@ -97,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
                 chatRef.push().setValue(new ChatData(userName, formatTime, userMessage));
-                message.setText(formatTime2);
+                message.setText("");
             }
         });
 
